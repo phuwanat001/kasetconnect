@@ -1,29 +1,62 @@
-import React from 'react'
-import { useState } from 'react'
+import React, { useState } from 'react';
+import farmer from '../assets/farmer.svg';
+import '../App.css';
+
 function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className='max-w-[1500px] bg-green-500 text-white p-5 mx-auto flex flex-row  justify-between rounded-b-lg' >
-      <div className="">
-        <a href="#">Logo</a>
-        <span className='ml-3'>|</span>
+    <nav className="bg-white shadow-md w-full">
+      <div className="max-w-[1500px] mx-auto p-5 flex items-center justify-between">
+        {/* Logo + Brand */}
+        <div className="flex items-center gap-4">
+          <img src={farmer} alt="Logo" className="w-10 h-10" />
+          <a href="#" className="text-2xl font-bold text-[var(--primary-green)]">KasetConnect</a>
+        </div>
+
+        {/* Hamburger Menu Button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-[var(--primary-text)] focus:outline-none cursor-pointer"
+            
+          >
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {isOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+              )}
+            </svg>
+          </button>
+        </div>
+
+        {/* Navigation Menu */}
+        <div className={`flex-col md:flex md:flex-row md:items-center md:gap-x-10 gap-y-4 md:gap-y-0 absolute md:static left-0 top-[80px] w-full md:w-auto bg-white md:bg-transparent px-5 py-4 md:p-0 z-50 transition-all duration-300 ease-in-out ${isOpen ? 'flex' : 'hidden md:flex'}`}>
+          <ul className="flex flex-col md:flex-row gap-y-4 md:gap-x-10 items-start md:items-center">
+            <li><a href="#" className="text-xl text-[var(--primary-text)]">หน้าแรก</a></li>
+            <li><a href="#" className="text-xl text-[var(--primary-text)]">ค้นหาอุปกรณ์</a></li>
+            <li><a href="#" className="text-xl text-[var(--primary-text)]">หมวดหมู่</a></li>
+            <li><a href="#" className="text-xl text-[var(--primary-text)]">ติดต่อเรา</a></li>
+          </ul>
+          <ul className="flex flex-col md:flex-row gap-y-3 md:gap-x-5 md:ml-10 mt-4 md:mt-0 items-start md:items-center">
+            <li><a href="#" className="text-xl text-[var(--primary-text)]">สมัครสมาชิก</a></li>
+            <li>
+              <a href="#" className="text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors">
+                เข้าสู่ระบบ
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
-    <ul className='flex flex-col md:flex-row md:gap-x-10'>
-        <li><a href="#">หน้าแรก</a></li>
-        <li><a href="#">ค้นหาอุปกรณ์</a></li>
-        <li><a href="#">หมวดหมู่</a></li>
-        <li><a href="#">ติดต่อเรา</a></li>
-
-    </ul>
-
-    <ul className='flex flex-col md:flex-row md:gap-x-10'>
-        <li><a href="#">สมัครสมาชิก</a></li>
-        <li><a href="#">เข้าส่ระบบ</a></li>
-    </ul>
-
-
     </nav>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
