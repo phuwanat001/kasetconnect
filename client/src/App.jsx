@@ -1,12 +1,15 @@
 
 import './App.css'
 import Navbar from './components/Navbar'
-import Users from './components/Users'
+import { Outlet } from "react-router-dom"
+
 function App() {
   return (
     <>
-      <Navbar/>
-      <Users/>
+        <Navbar />
+        <main className="p-4">
+        <Outlet /> {/* ส่วนที่จะแสดงหน้าจาก route.jsx */}
+        </main>
     </>
   )
 }
