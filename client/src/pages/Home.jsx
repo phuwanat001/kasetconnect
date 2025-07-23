@@ -9,7 +9,7 @@ function Home() {
       <div className='w-full'> 
         <img
           src= {farmbureau} alt="KasetConnect Banner"
-          className="w-full h-[500px] object-cover rounded-b-2xl shadow-md"/>
+          className="w-full h-[500px] object-cover rounded-md-2xl shadow-md"/>
       </div>
       <div className="text-center py-10 px-4 bg-[var(--bg-light)] flex-grow">
         <h1 className="text-4xl font-bold text-[var(--primary-green)] mb-6">
