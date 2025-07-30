@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-//import farmer from '../assets/farmer.svg';
 import '../App.css';
 
 function Navbar() {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import farmbureau from '../assets/farm-bureau.jpg';
+import farmbureau from '../../assets/farm-bureau.jpg';
+
 
 function Home() {
   return (

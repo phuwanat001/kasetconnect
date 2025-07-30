@@ -1,11 +1,11 @@
 import {createBrowserRouter} from "react-router-dom";
 import App from "../App"
-import Home from '../pages/Home'
+import Home from '../pages/home/Home'
 import Users from "../components/Users"
 import Category from "../components/Category";
 import Search from '../components/Search'
 import Contact from '../components/Contact'
-/*import Login from '../components/Login'*/ //กรณีเติมหน้าอื่นอีก
+
 
 const router = createBrowserRouter([
     {
