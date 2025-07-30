@@ -7,7 +7,7 @@ function Navbar() {
 
   return (
     <nav className="bg-white shadow-md w-full relative z-50">
-      <div className="max-w-[1500px] mx-auto p-5 flex items-center justify-between">
+      <div className="max-w-[1500px] mx-auto p-5 flex justify-between  items-center">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-1">
           <span className="text-2xl font-bold text-[var(--primary-green)]">Kaset</span>
