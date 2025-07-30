@@ -1,5 +1,6 @@
+import React from 'react'
 
-function Search() {
+const Search = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-7">ค้นหาอุปกรณ์</h1>
@@ -14,3 +15,4 @@ function Search() {
 }
 
 export default Search
+
