@@ -1,6 +1,7 @@
 import Banner from '../home/Banner';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { FaSearch } from "react-icons/fa";
 
 function Home() {
   const location = useLocation();
@@ -28,10 +29,15 @@ function Home() {
           คุณสามารถมุ่งเน้นไปที่การเพิ่มประสิทธิภาพในงานของคุณได้มากขึ้น โดยไม่ต้องกังวลเกี่ยวกับการดูแลเครื่องจักรที่อาจเสียหายหรือเสื่อมสภาพ
         </p>
       </div>
-      <h1 className='max-w-5xl text-2xl font-medium md:flex justify-center p-2'>ค้นหาเครื่องจักรแและอุปกรณ์</h1>
-      <div id="search-box" className="flex items-center justify-center p-6 bg-white">
-        <input type="text"className="border p-2 rounded-md w-3xl shadow-sm" placeholder="ค้นหา..."/>
-        <button className='text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors'>
+      <h1 className='max-w-5xl text-2xl font-medium md:flex justify-center p-3'>ค้นหาเครื่องจักรแและอุปกรณ์</h1>
+      
+      <div id="search-box" className="flex items-center justify-center p-5 bg-white">
+        <div className='relative w-full max-w-xl'>
+          <FaSearch className="absolute inset-y-3 left-3 flex items-center text-gray-400 "/>
+        <input type="text" placeholder="ค้นหา..." className="w-full border pl-10 pr-4 py-2 rounded-md shadow-sm"/>
+        </div>
+        
+        <button className='ml-3 text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors'>
           ค้นหา
         </button>
         

@@ -57,13 +57,13 @@ function Navbar({ onSearchClick }) {
           }`}
         >
           <ul className="flex flex-col md:flex-row gap-y-4 md:gap-x-10 items-start md:items-center">
-            <li><Link to="/" className="text-xl text-[var(--primary-text)]" onClick={() => setIsOpen(false)}>หน้าแรก</Link></li>
-            <li><button onClick={handleScrollToSearch} className="text-xl text-[var(--primary-text)]">ค้นหาอุปกรณ์</button></li>
-            <li><Link to="/category" className="text-xl text-[var(--primary-text)]"onClick={() => setIsOpen(false)}>หมวดหมู่</Link></li>
-            <li><Link to="/contact" className="text-xl text-[var(--primary-text)]"onClick={() => setIsOpen(false)}>ติดต่อเรา</Link></li>
+            <li><Link to="/" className="text-xl text-[var(--primary-text)] hover:text-black" onClick={() => setIsOpen(false)}>หน้าแรก</Link></li>
+            <li><button onClick={handleScrollToSearch} className="text-xl text-[var(--primary-text)] hover:text-black">ค้นหาอุปกรณ์</button></li>
+            <li><Link to="/category" className="text-xl text-[var(--primary-text)] hover:text-black"onClick={() => setIsOpen(false)}>หมวดหมู่</Link></li>
+            <li><Link to="/contact" className="text-xl text-[var(--primary-text)] hover:text-black"onClick={() => setIsOpen(false)}>ติดต่อเรา</Link></li>
           </ul>
           <ul className="flex flex-col md:flex-row gap-y-3 md:gap-x-5 md:ml-10 mt-4 md:mt-0 items-start md:items-center">
-            <li><Link to="/register" className="text-xl text-[var(--primary-text)]" onClick={() => setIsOpen(false)}>สมัครสมาชิก |</Link></li>
+            <li><Link to="/register" className="text-xl text-[var(--primary-text)] hover:text-black" onClick={() => setIsOpen(false)}>สมัครสมาชิก</Link></li>
             <li>
               <Link to="/login"
                 className="text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors"
