@@ -1,26 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react'
+import machine1 from '../assets/machines-1.jpg'
+import machine2 from '../assets/machines-2.jpg'
+import machine3 from '../assets/machines-3.png'
+import machine4 from '../assets/machines-4.png'
+import machine5 from '../assets/machines-5.jpg'
+import machine6 from '../assets/machines-6.png'
+import machine7 from '../assets/machines-7.jpg'
+import machine8 from '../assets/machines-8.png'
+import machine9 from '../assets/machines-9.jpg'
 
-function Category() {
-  const categories = [
-    { id: 1, name: 'รถแทรกเตอร์', image: 'https://via.placeholder.com/150' },
-    { id: 2, name: 'รถเกี่ยวข้าว', image: 'https://via.placeholder.com/150' },
-    { id: 3, name: 'เครื่องสูบน้ำ', image: 'https://via.placeholder.com/150' },
-    { id: 4, name: 'โดรนพ่นยา', image: 'https://via.placeholder.com/150' },
-  ];
 
-  return (
-    <div className="max-w-6xl mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold text-center text-[var(--primary-green)] mb-6">หมวดหมู่เครื่องจักร</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {categories.map((cat) => (
-          <div key={cat.id} className="border rounded-xl shadow hover:shadow-lg p-4 text-center">
-            <img src={cat.image} alt={cat.name} className="w-full h-40 object-cover rounded-md mb-3" />
-            <p className="text-lg font-medium">{cat.name}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+const images = {
+  'machines-1.jpg' : machine1,'machines-2.jpg' : machine2,'machines-3.png' : machine3,'machines-4.png' : machine4,'machines-5.jpg' : machine5,
+  'machines-6.png' : machine6,'machines-7.jpg' : machine7,'machines-8.png' : machine8,'machines-9.jpg' : machine9,
 }
 
-export default Category;
+const categorys = ["เลือกหมวดหมู่" ,"เครื่องจักรเตรียมดิน", "เครื่องจักรปลูกพืช", "ระบบให้น้ำ/เครื่องจักรชลประทาน", "เครื่องจักรดูแลรักษาพืช", "เครื่องจักรเก็บเกี่ยว", "เครื่องจักรหลังการเก็บเกี่ยว"]
+
+const Category = () =>{
+  const[machines, setMachines] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("เลือกหมวดหมู่");
+
+  useEffect(() =>  {
+    fetch("machines.json")
+    .then(res => res.json())
+    .then((data) => setMachines(data))
+  }, [])
+
+  const filteredMachines = selectedCategory === "เลือกหมวดหมู่" ? machines: machines.filter(machine => machine.category === selectedCategory.toLowerCase())
+  console.log(filteredMachines)
+
+  return (
+    <div className='max-w-6xl mx-auto py-10 px-4'>
+        <h1 className="text-3xl font-bold text-center text-[var(--primary-green)] mb-6">หมวดหมู่เครื่องจักร</h1>
+        <h2 className='text-3 font-semibold md-6'>เครื่องจักรและอุปกรณ์ที่นิยม</h2>
+        
+        {/*category */}
+        <div className='mb-8 flex items-center'>
+          <select onChange={(e) => setSelectedCategory(e.target.value)}
+          name="category" id="category" className='border bg-[#EAEAEA] border-gray-300 rouned-md px-4 py-2 focus:outline-none'>
+            {
+              categorys.map((category, index) => (
+                <option key={index} value={category}>{category}</option>
+              ))
+            }
+          </select>
+        </div>
+
+        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+          {
+            filteredMachines.map((machine, index) => (
+              <div key={index} className='bg-white shadow-md rounded-lg overflow-hidden'>
+                <img src={images[machine.coverImage]} alt={machine.name} />
+                <div className='p-4'>
+                  <h3 className='text-xl font-semibold text-gray-800'>{machine.name}</h3>
+                  <p className='text-gray-600'>{machine.description}</p>
+                  <p className='text-green-600 font-bold mt-2'>฿{machine.rental_price} / วัน</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+
+    </div>
+  )
+}
+
+export default Category
