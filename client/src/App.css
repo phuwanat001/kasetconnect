@@ -19,3 +19,18 @@ body{
 html {
   scroll-behavior: smooth;
 }
+.btn-primary {
+  background-color: #74B504 ; 
+  padding: 0.5rem 3rem; 
+  border-radius: 0.375rem; 
+  font-size: 1rem; 
+  font-family: 'YourSecondaryFont', sans-serif; 
+  font-weight: 700; 
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #5F9700; 
+  color: white;
+}

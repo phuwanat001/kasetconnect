@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 
+
 function Home() {
   const location = useLocation();
 
@@ -42,6 +43,11 @@ function Home() {
         </button>
         
       </div>   
+
+      {/*<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+        <MachineCard />
+          
+        </div>*/}
          
     </>
   );

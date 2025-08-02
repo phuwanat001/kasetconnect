@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import machine1 from '../assets/machines-1.jpg'
-import machine2 from '../assets/machines-2.jpg'
-import machine3 from '../assets/machines-3.png'
-import machine4 from '../assets/machines-4.png'
-import machine5 from '../assets/machines-5.jpg'
-import machine6 from '../assets/machines-6.png'
-import machine7 from '../assets/machines-7.jpg'
-import machine8 from '../assets/machines-8.png'
-import machine9 from '../assets/machines-9.jpg'
+import machine1 from '../assets/machines/machines-1.jpg'
+import machine2 from '../assets/machines/machines-2.jpg'
+import machine3 from '../assets/machines/machines-3.png'
+import machine4 from '../assets/machines/machines-4.png'
+import machine5 from '../assets/machines/machines-5.jpg'
+import machine6 from '../assets/machines/machines-6.png'
+import machine7 from '../assets/machines/machines-7.jpg'
+import machine8 from '../assets/machines/machines-8.png'
+import machine9 from '../assets/machines/machines-9.jpg'
+import MachineCard from '../pages/machines/MachineCard'
 
 
 const images = {
@@ -50,17 +51,13 @@ const Category = () =>{
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
           {
             filteredMachines.map((machine, index) => (
-              <div key={index} className='bg-white shadow-md rounded-lg overflow-hidden'>
-                <img src={images[machine.coverImage]} alt={machine.name} />
-                <div className='p-4'>
-                  <h3 className='text-xl font-semibold text-gray-800'>{machine.name}</h3>
-                  <p className='text-gray-600'>{machine.description}</p>
-                  <p className='text-green-600 font-bold mt-2'>฿{machine.rental_price} / วัน</p>
-                </div>
-              </div>
+              <MachineCard key={index} machine={machine}/>
+              
             ))
           }
         </div>
+
+        
 
     </div>
   )
