@@ -1,0 +1,36 @@
+const express = require("express");
+const app = express();
+const cors = require("cors");
+
+const mongoose = require("mongoose");
+const port = process.env.PORT || 5000;
+require('dotenv').config()
+
+// middleware
+app.use(express.json());
+app.use(cors({
+    origin: ['http://localhost:5173'],
+    credentials: true
+}))
+
+//import routes
+const ProductType = require('./src/product_type/type.route');
+const productRoutes = require('./src/products/product.route');
+
+// routes
+app.use('/api/product-types', ProductType)
+app.use('/api/products',productRoutes)
+
+
+async function main() {
+  await mongoose.connect(process.env.MONGO_URI);
+  app.use("/", (req, res) => {
+    res.send("KasetConnect Server is running!");
+  });
+}
+
+main().then(() => console.log("Mongodb connect successfully! ✅")).catch(err => console.log(err));
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port} 🚀`);
+});
