@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import MachineCard from '../machines/MachineCard';
+import Product from '../../components/Product';
 
 
 function Home() {
@@ -59,7 +60,7 @@ function Home() {
           ))}
         </div>
       </div>
-
+        {/* <Product/> */}
     </>
   );
 }
