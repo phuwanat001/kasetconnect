@@ -1,11 +1,13 @@
 import Banner from '../home/Banner';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
+import MachineCard from '../machines/MachineCard';
 
 
 function Home() {
   const location = useLocation();
+  const [machines, setMachines] = useState([]);
 
   useEffect(() => {
     if(location.hash == '#search-box'){
@@ -15,6 +17,12 @@ function Home() {
       }
     }
   }, [location]);
+
+  useEffect(() =>  {
+      fetch("/machines.json")
+      .then(res => res.json())
+      .then((data) => setMachines(data))
+    }, []);
 
   return (
     <>
@@ -41,14 +49,17 @@ function Home() {
         <button className='ml-3 text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors'>
           ค้นหา
         </button>
-        
       </div>   
-
-      {/*<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
-        <MachineCard />
-          
-        </div>*/}
          
+      <div className='max-w-7xl mx-auto px-4 py-10'>
+        <h2 className='text-xl font-semibold mb-4 text-gray-800'>รายการแนะนำ</h2>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+          {machines.map((machine, index) => (
+            <MachineCard key={index} machine={machine}/>
+          ))}
+        </div>
+      </div>
+
     </>
   );
 }
