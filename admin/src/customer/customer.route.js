@@ -16,4 +16,7 @@ router.get("/:id", authMiddleware, getSingleCustomer);
 router.put("/edit/:id", authMiddleware, updateCustomer);
 router.delete("/:id", authMiddleware, deleteCustomer);
 
+//get rentals by customer ID
+// router.get("/:id/rentals", authMiddleware, getOrdersByCustomerId);
+
 module.exports = router;

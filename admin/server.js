@@ -17,6 +17,7 @@ app.use(cors({
 const ProductTypeRoutes = require('./src/product_type/type.route');
 const ProductRoutes = require('./src/products/product.route');
 const CustomersRoutes = require('./src/customer/customer.route');
+const RentalRoutes = require('./src/rental/rental.route');
 const LessorRoutes = require('./src/lessor/lessor.route');
 const AdminRoutes = require('./src/admin/admin.route');
 
@@ -24,6 +25,7 @@ const AdminRoutes = require('./src/admin/admin.route');
 app.use('/api/product-types', ProductTypeRoutes)
 app.use('/api/products',ProductRoutes)
 app.use('/api/customers', CustomersRoutes)
+app.use('/api/rental',RentalRoutes)
 app.use('/api/lessors',LessorRoutes )
 app.use('/api/admin',AdminRoutes )
 

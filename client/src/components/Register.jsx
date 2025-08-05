@@ -143,7 +143,7 @@ const Register = () => {
             <div className='mt-6 flex justify-center'>
                 <button className='w-[400px] flex flex-wrap gap-1 items-center justify-center bg-black hover:bg-blue-700
                 text-white font-bold py-2 px-4 rounded focus:outline-none'>
-                    <FaGoogle className='mr-2'/>Sign in whit Google
+                    <FaGoogle className='mr-2'/>Sign in with Google
                 </button>
             </div>
 

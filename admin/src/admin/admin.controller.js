@@ -1,4 +1,7 @@
 const Admin = require("./admin.model");
+const Customers = require("../customer/customer.model");
+const Lesssors = require("../lessor/lessor.model");
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -44,6 +47,7 @@ const postAdmin = async (req, res) => {
   }
 };
 
+//Login function for admin
 const loginAdmin = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -95,9 +99,89 @@ const loginAdmin = async (req, res) => {
   }
 };
 
+// Function to get all customers
+const getAllCustomers =async (req, res) => {
+  try {
+    const customers = await Customers.find();
+    res.status(200).json({
+      success: true,
+      customers,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+//Function to get a customer by ID
+const getCustomerById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const customer = await Customers.findById(id);
+    if (!customer) {
+      return res.status(404).json({
+        success: false,
+        message: "Customer not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      customer,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+//Function to get all lessors
+const getAllLessors =async (req, res) => {
+  try {
+    const lessors = await Lesssors.find();
+    res.status(200).json({
+      success: true,
+      lessors,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+//Function to get lessors by ID
+const getLessorById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const lessor = await Lesssors.findById(id);
+    if (!lessor) {
+      return res.status(404).json({
+        success: false,
+        message: "Lessor not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      lessor,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
 
 
 module.exports = {
     postAdmin,
     loginAdmin,
+    getAllCustomers,
+    getCustomerById,
+    getAllLessors,
+    getLessorById,
+
 };
