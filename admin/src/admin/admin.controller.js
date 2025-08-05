@@ -1,0 +1,103 @@
+const Admin = require("./admin.model");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const postAdmin = async (req, res) => {
+  try {
+    const { firstName, lastName, username, password } = req.body;
+    const existingAdmin = await Admin.findOne(
+     { username },
+    );
+    if (existingAdmin) {
+      return res.status(400).json({
+        success: false,
+        message: "Admin with this email or username already exists",
+      });
+    }
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const newAdmin = new Admin({
+      firstName,
+      lastName,
+      username,
+      password: hashedPassword,
+    });
+
+    const saveAdmin = await newAdmin.save();
+    if (!saveAdmin) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to register admin",
+      });
+    }
+    res.status(201).json({
+      success: true,
+      message: "admin registered successfully",
+      admin: newAdmin,
+    });
+  } catch (error) {
+    console.error("Registration error:", error);
+
+    res.status(500).json({
+      message: "Internal server error 500",
+    });
+  }
+};
+
+const loginAdmin = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Find customer by username
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid username or password",
+      });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid username or password",
+      });
+    }
+
+    // Create JWT
+    const token = jwt.sign(
+      {
+        id: admin._id,
+        username: admin.username,
+      },
+      process.env.JWT_SECRET, // Make sure to set this in your .env
+      { expiresIn: "1d" } // or '1h', etc.
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Login successful",
+      token,
+      admin: {
+        id: admin._id,
+        firstName: admin.firstName,
+        lastName: admin.lastName,
+        username: admin.username,
+      },
+    });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
+module.exports = {
+    postAdmin,
+    loginAdmin,
+};
