@@ -8,6 +8,16 @@ import MachineCard from '../machines/MachineCard';
 function Home() {
   const location = useLocation();
   const [machines, setMachines] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredMachines, setFilteredMachines] = useState([]);
+
+  const handleSearch = () => {
+    const filtered = machines.filter(machine =>
+      machine.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+      setFilteredMachines(filtered);
+  };
+ 
 
   useEffect(() => {
     if(location.hash == '#search-box'){
@@ -21,8 +31,13 @@ function Home() {
   useEffect(() =>  {
       fetch("/machines.json")
       .then(res => res.json())
-      .then((data) => setMachines(data))
+      .then((data) => {
+        setMachines(data);
+        setFilteredMachines(data);
+      });
     }, []);
+
+  
 
   return (
     <>
@@ -38,15 +53,16 @@ function Home() {
           คุณสามารถมุ่งเน้นไปที่การเพิ่มประสิทธิภาพในงานของคุณได้มากขึ้น โดยไม่ต้องกังวลเกี่ยวกับการดูแลเครื่องจักรที่อาจเสียหายหรือเสื่อมสภาพ
         </p>
       </div>
-      <h1 className='max-w-5xl text-2xl font-medium md:flex justify-center p-3'>ค้นหาเครื่องจักรแและอุปกรณ์</h1>
+      <h1 className='max-w-5xl text-2xl font-medium md:flex justify-center p-3'>ค้นหาเครื่องจักรและอุปกรณ์</h1>
       
       <div id="search-box" className="flex items-center justify-center p-5 bg-white">
         <div className='relative w-full max-w-xl'>
           <FaSearch className="absolute inset-y-3 left-3 flex items-center text-gray-400 "/>
-        <input type="text" placeholder="ค้นหา..." className="w-full border pl-10 pr-4 py-2 rounded-md shadow-sm"/>
+        <input type="text" placeholder="ค้นหา..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full border pl-10 pr-4 py-2 rounded-md shadow-sm"/>
         </div>
         
-        <button className='ml-3 text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors'>
+        <button onClick={handleSearch} className='ml-3 text-xl text-white inline-flex items-center justify-center rounded-md border-2 border-transparent bg-[var(--primary-green)] px-4 py-2 hover:bg-[var(--secondary-green)] transition-colors'>
           ค้นหา
         </button>
       </div>   
@@ -54,7 +70,7 @@ function Home() {
       <div className='max-w-7xl mx-auto px-4 py-10'>
         <h2 className='text-xl font-semibold mb-4 text-gray-800'>รายการแนะนำ</h2>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {machines.map((machine, index) => (
+          {filteredMachines.map((machine, index) => (
             <MachineCard key={index} machine={machine}/>
           ))}
         </div>

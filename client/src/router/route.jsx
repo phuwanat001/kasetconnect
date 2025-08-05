@@ -1,9 +1,10 @@
 import {createBrowserRouter} from "react-router-dom";
 import App from "../App"
-import Home from '../pages/home/Home'
-import Users from "../components/Users"
+import Home from '../pages/home/Home';
 import Category from "../components/Category";
-import Contact from '../components/Contact'
+import Contact from '../components/Contact';
+import Login from "../components/Login";
+import Register from "../components/Register";
 
 
 const router = createBrowserRouter([
@@ -12,9 +13,10 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             {path: '', element: <Home />},
-            {path: 'users', element: <Users />},
-            {path: 'category', element: <Category />},
-            {path: 'contact', element: <Contact />},
+            {path: '/category', element: <Category />},
+            {path: '/contact', element: <Contact />},
+            {path: '/login', element: <Login/>},
+            {path: '/register', element: <Register/>}
         ],
     },
 ])
