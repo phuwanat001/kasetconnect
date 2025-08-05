@@ -1,24 +1,19 @@
 const express = require('express');
-const Customers = require('./customer.model');
-const { postCustomer, getCustomer, updateCustomer, getSingleCustomer } = require('./customer.controller');
+const { postCustomer, getCustomer, updateCustomer, getSingleCustomer, deleteCustomer, loginCustomer } = require('./customer.controller');
+const authMiddleware = require('../middleware/auth.middleware');
 const router = express.Router();
 
-// Create a new customer
-router.post("/create-customer",postCustomer)
+// Public routes (no auth required)
+router.post("/register", postCustomer); 
+router.post("/login", loginCustomer);
 
-// Get all customers
-router.get("/", getCustomer)
+// Protected routes (auth required)
+router.use(authMiddleware); 
 
-// Get a customer by ID
-//router.get("/:id", )
+// Protected routes
+// router.get("/", authMiddleware, getCustomer);
+router.get("/:id", authMiddleware, getSingleCustomer);
+router.put("/edit/:id", authMiddleware, updateCustomer);
+router.delete("/:id", authMiddleware, deleteCustomer);
 
-// Update a customer by ID
-/router.put("/edit/:id",updateCustomer)
-
-// Delete a customer by ID
-//router.delete("/:id", )
-
-// Update a customer by ID
-router.get("/:id",getSingleCustomer)
-
-module.exports = router
+module.exports = router;

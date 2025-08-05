@@ -18,12 +18,14 @@ const ProductTypeRoutes = require('./src/product_type/type.route');
 const ProductRoutes = require('./src/products/product.route');
 const CustomersRoutes = require('./src/customer/customer.route');
 const LessorRoutes = require('./src/lessor/lessor.route');
+const AdminRoutes = require('./src/admin/admin.route');
 
 // routes
 app.use('/api/product-types', ProductTypeRoutes)
 app.use('/api/products',ProductRoutes)
 app.use('/api/customers', CustomersRoutes)
 app.use('/api/lessors',LessorRoutes )
+app.use('/api/admin',AdminRoutes )
 
 
 async function main() {
