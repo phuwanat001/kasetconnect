@@ -12,12 +12,18 @@ const productSchema = new mongoose.Schema(
       enum: ["available", "unavailable"],
       default: "available",
     },
-    type: {
+    product_type: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductType",
       required: true,
     },
     image: { type: String, required: true },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Lessors",
+      required: true,
+
+    },
     createdAt: { type: Date, default: Date.now },
   },
   {

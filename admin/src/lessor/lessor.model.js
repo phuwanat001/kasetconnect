@@ -1,56 +1,55 @@
 const mongoose = require("mongoose");
 
-const lessonSchema = new mongoose.Schema({
-    firstName : {
-        type : String,
-        required : true
+const lessorSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
     },
-    lastName : {
-        type : String,
-        required : true
+    lastName: {
+      type: String,
+      required: true,
     },
-        emill : {
-        type : String,
-        required : true
+    email: {
+      // ✔️ แก้ชื่อให้ถูก
+      type: String,
+      required: true,
+      unique: true,
     },
-    phone : {
-        type : String,
-        required : true
+    phone: {
+      type: String,
+      required: true,
     },
-    address: [{
-        street: {
-            type: String,
-            required: true
-        },
-        city: {
-            type: String,
-            required: true
-        },
-        country: {
-            type: String,
-            required: true
-        },
-        zipCode: {
-            type: String,
-            required: true
-        }
-    }],
-    birthday : {
-        type : String,
-        required : true
+    address: [
+      {
+        street: { type: String, required: true },
+        city: { type: String, required: true },
+        country: { type: String, required: true },
+        zipCode: { type: String, required: true },
+      },
+    ],
+    birthdate: {
+      // ✔️ แก้ชื่อให้ตรงกับ postUser
+      type: Date,
+      required: true,
     },
-    username : {
-        type : String,
-        required : true,
-        unique: true
+    username: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    password : {
-        type : String,
-        required : true
+    password: {
+      type: String,
+      required: true,
     },
+    role: {
+      type: String,
+      enum: ["customer", "lessor"],
+      default: "customer",
+    },
+  },
+  { timestamps: true }
+);
 
-
-},{    timestamps: true})
-
-const Lessors = mongoose.model('Lessors', lessonSchema);
+const Lessors = mongoose.model("Lessors", lessorSchema);
 module.exports = Lessors;

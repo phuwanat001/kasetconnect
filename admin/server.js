@@ -20,13 +20,15 @@ const CustomersRoutes = require('./src/customer/customer.route');
 const RentalRoutes = require('./src/rental/rental.route');
 const LessorRoutes = require('./src/lessor/lessor.route');
 const AdminRoutes = require('./src/admin/admin.route');
+const AuthRoutes = require('./src/auth/auth.route');
 
 // routes
-app.use('/api/product-types', ProductTypeRoutes)
-app.use('/api/products',ProductRoutes)
-app.use('/api/customers', CustomersRoutes)
-app.use('/api/rental',RentalRoutes)
-app.use('/api/lessors',LessorRoutes )
+//app.use("api/register",)
+app.use("/api/auth",AuthRoutes)
+app.use("/api/customers", CustomersRoutes);
+app.use("/api/products" , ProductRoutes);
+app.use("/api/lessors", LessorRoutes);
+app.use("/api/product-types", ProductTypeRoutes);
 app.use('/api/admin',AdminRoutes )
 
 
