@@ -2,22 +2,15 @@ const express = require("express");
 const router = express.Router();
 const Lessors = require("./lessor.model");
 const { postLessor, getLessor, updateLessor, deleteLessor, getSingleLessor } = require("./lessor.controller");
-
-
-//create lessor
-router.post("/create-lessor", postLessor)
-
-//get all lessors
-router.get('/',getLessor)
+const authMiddleware = require('../middleware/auth.middleware');
+//get single lessor by ID
+//router.get("/:id",authMiddleware, getSingleLessor);
 
 //update lessor
-router.put('/edit/:id',updateLessor)
+router.put('/edit/:id',authMiddleware,updateLessor)
 
 //delete lessor
-router.delete('/:id',deleteLessor)
-
-//read single lessor
-router.get("/:id",getSingleLessor)
+router.delete('/:id',authMiddleware,deleteLessor)
 
 
 module.exports = router;

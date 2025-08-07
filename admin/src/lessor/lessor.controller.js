@@ -1,14 +1,14 @@
-const Lessors = require("./lessor.model");
+const Lesssors = require("./lessor.model");
 
 // Create a new lessor
 const postLessor = async (req, res) => {
   try {
-    const newLossor = new Lessors({ ...req.body });
+    const newLossor = new Lesssors({ ...req.body });
     await newLossor.save();
     console.log("Lessor created successfully:", newLossor);
     res.status(200).json({
       message: "Lessor created successfully",
-      lessor: newLossor,
+      customer: newLossor,
     });
   } catch (error) {
     console.error("Error creating lessor:", error);
@@ -19,7 +19,7 @@ const postLessor = async (req, res) => {
 //get all lessors
 const getLessor = async (req, res) => {
   try {
-    const getLessor = await Lessors.find().sort({ createdAt: -1 });
+    const getLessor = await Lesssors.find().sort({ createdAt: -1 });
     res.status(200).send(getLessor);
   } catch (error) {
     console.error("Error fetching lessor:", error);
@@ -31,22 +31,21 @@ const getLessor = async (req, res) => {
 const updateLessor = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedLessor = await Lessors.findByIdAndUpdate(id, req.body, {
+    const updatedLessor = await Lesssors.findByIdAndUpdate(id, req.body, {
       new: true,
     });
 
     if (!updatedLessor) {
-      res.status(404).send({
-        message: "Lessor Not Found !",
-      });
+      return res.status(404).json({ message: "Lessor not found" });
     }
-    res.status(200).send({
+
+    res.status(200).json({
       message: "Lessor updated successfully",
       lessor: updatedLessor,
     });
   } catch (error) {
-    console.error("Error updating a lessor :", error);
-    res.status(500).send({ message: "Failed to update lessor" });
+    console.error("Error updating Lessor:", error);
+    res.status(500).json({ message: "Failed to update lessor" });
   }
 };
 
@@ -54,13 +53,12 @@ const updateLessor = async (req, res) => {
 const deleteLessor = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedLessor = await Lessors.findByIdAndDelete(id);
+    const deletedLessor = await Lesssors.findByIdAndDelete(id);
     if (!deletedLessor) {
-      return res.status(404).send({
-        message: "Lessor Not Found !",
-      });
+      return res.status(404).json({ message: "Lessor not found" });
     }
-    res.status(200).send({
+
+    res.status(200).json({
       message: "Lessor deleted successfully",
       lessor: deletedLessor,
     });
@@ -74,7 +72,7 @@ const deleteLessor = async (req, res) => {
 const getSingleLessor = async (req, res) => {
   try {
     const { id } = req.params;
-    const lessor = await Lessors.findById(id);
+    const lessor = await Lesssors.findById(id);
     if (!lessor) {
       return res.status(404).send({
         message: "Lessor Not Found !",
@@ -91,9 +89,6 @@ const getSingleLessor = async (req, res) => {
 };
 
 module.exports = {
-  postLessor,
-  getLessor,
   updateLessor,
   deleteLessor,
-  getSingleLessor,
 };

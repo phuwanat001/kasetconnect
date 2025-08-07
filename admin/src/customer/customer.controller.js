@@ -127,10 +127,10 @@ const loginCustomer = async (req, res) => {
 const getCustomer = async (req, res) => {
   try {
     const customers = await Customers.find();
-    res.status(200).json(customers);
+    res.status(200).send(customers);
   } catch (error) {
     console.error("Error fetching customers:", error);
-    res.status(500).json({ message: "Failed to fetch customers" });
+    res.status(500).send({ message: "Failed to fetch customers" });
   }
 };
 
@@ -192,10 +192,9 @@ const deleteCustomer = async (req, res) => {
 };
 
 module.exports = {
-  postCustomer,
-  getCustomer,
+
   updateCustomer,
   getSingleCustomer,
   deleteCustomer,
-  loginCustomer,
+
 };

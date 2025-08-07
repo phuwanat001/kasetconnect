@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const customerSchema = new mongoose.Schema({
+const authSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true
@@ -12,9 +12,7 @@ const customerSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true,
-        lowercase: true,
-        trim: true
+        unique: true
     },
     phone: {
         type: String,
@@ -45,8 +43,7 @@ const customerSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
-        trim: true
+        unique: true
     },
     password: {
         type: String,
@@ -69,5 +66,5 @@ const customerSchema = new mongoose.Schema({
 })
 
 
-const Customers = mongoose.model('Customers', customerSchema);
-module.exports = Customers;
+const Auths = mongoose.model('Auth', authSchema);
+module.exports = Auths;
