@@ -2,12 +2,23 @@ import React from 'react'
 import { FaStar } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import { getImgUrl } from '../../utils/getImgUrl'
+import { useDispatch } from 'react-redux'
+import { addToCart } from '../../redux/features/cart/cartSlice'
 
 const MachineCard = ({ machine }) => {
+  const dispatch = useDispatch();
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product))
+  }
   return (
     <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-md mx-auto hover:shadow-lg hover:scale-105 transition-transform duration-300">
-      <div className="flex justify-end mb-2">
-        <button className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-blue-600">
+      <div 
+      onClick={() => handleAddToCart(machine)}
+      className="flex justify-end mb-2">
+        <button 
+        onClick={() => handleAddToCart(machine)}
+        className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg hover:bg-blue-600">
           +
         </button>
       </div>
