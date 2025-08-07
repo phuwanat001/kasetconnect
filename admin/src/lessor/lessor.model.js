@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const lessonSchema = new mongoose.Schema({
+const lessorSchema = new mongoose.Schema({
     firstName : {
         type : String,
         required : true
@@ -9,9 +9,12 @@ const lessonSchema = new mongoose.Schema({
         type : String,
         required : true
     },
-        emill : {
+        email : {
         type : String,
-        required : true
+        required : true,
+        unique: true,
+        lowercase: true,
+        trim: true
     },
     phone : {
         type : String,
@@ -36,13 +39,15 @@ const lessonSchema = new mongoose.Schema({
         }
     }],
     birthday : {
-        type : String,
+        type : Date,
         required : true
     },
     username : {
         type : String,
         required : true,
-        unique: true
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     password : {
         type : String,
@@ -52,5 +57,5 @@ const lessonSchema = new mongoose.Schema({
 
 },{    timestamps: true})
 
-const Lessors = mongoose.model('Lessors', lessonSchema);
+const Lessors = mongoose.model('Lessors', lessorSchema);
 module.exports = Lessors;

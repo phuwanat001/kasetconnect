@@ -11,7 +11,7 @@ router.post("/login", loginCustomer);
 router.use(authMiddleware); 
 
 // Protected routes
-// router.get("/", authMiddleware, getCustomer);
+router.get("/", authMiddleware, getCustomer);
 router.get("/:id", authMiddleware, getSingleCustomer);
 router.put("/edit/:id", authMiddleware, updateCustomer);
 router.delete("/:id", authMiddleware, deleteCustomer);

@@ -127,10 +127,10 @@ const loginCustomer = async (req, res) => {
 const getCustomer = async (req, res) => {
   try {
     const customers = await Customers.find();
-    res.status(200).send(customers);
+    res.status(200).json(customers);
   } catch (error) {
     console.error("Error fetching customers:", error);
-    res.status(500).send({ message: "Failed to fetch customers" });
+    res.status(500).json({ message: "Failed to fetch customers" });
   }
 };
 
@@ -143,7 +143,7 @@ const updateCustomer = async (req, res) => {
     });
 
     if (!updatedCustomer) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "Product Not Found !",
       });
     }
@@ -163,7 +163,7 @@ const getSingleCustomer = async (req, res) => {
     const { id } = req.params;
     const customer = await Customers.findById(id);
     if (!customer) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "Customer Not Found !",
       });
     }

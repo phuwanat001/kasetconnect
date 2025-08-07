@@ -52,7 +52,7 @@ const updateProduct = async (req, res) => {
     });
 
     if (!updatedProduct) {
-      res.status(404).send({
+      return res.status(404).send({
         message: "Product Not Found !",
       });
     }

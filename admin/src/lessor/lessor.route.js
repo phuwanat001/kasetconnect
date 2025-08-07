@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Lesssors = require("./lessor.model");
+const Lessors = require("./lessor.model");
 const { postLessor, getLessor, updateLessor, deleteLessor, getSingleLessor } = require("./lessor.controller");
 
 
