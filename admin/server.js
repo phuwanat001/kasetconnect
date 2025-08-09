@@ -27,6 +27,7 @@ const AuthRoutes = require('./src/auth/auth.route');
 app.use("/api/auth",AuthRoutes)
 app.use("/api/customers", CustomersRoutes);
 app.use("/api/products" , ProductRoutes);
+app.use("/api/rentals", RentalRoutes);
 app.use("/api/lessors", LessorRoutes);
 app.use("/api/product-types", ProductTypeRoutes);
 app.use('/api/admin',AdminRoutes )

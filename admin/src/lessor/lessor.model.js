@@ -11,7 +11,7 @@ const lessorSchema = new mongoose.Schema(
       required: true,
     },
     email: {
-      // ✔️ แก้ชื่อให้ถูก
+
       type: String,
       required: true,
       unique: true,
