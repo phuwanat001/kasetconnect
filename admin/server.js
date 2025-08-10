@@ -35,16 +35,12 @@ app.use('/api/admin',AdminRoutes )
 
 async function main() {
   await mongoose.connect(process.env.MONGO_URI);
-  console.log("Mongodb connect successfully! ✅");
-
   app.use("/", (req, res) => {
     res.send("KasetConnect Server is running!");
   });
 }
 
-main()
-  .then(() => console.log("Mongodb connect successfully! ✅"))
-  .catch(err => console.log(err));
+main().then(() => console.log("Mongodb connect successfully! ✅")).catch(err => console.log(err));
 
 app.listen(port, () => {
   console.log(`Server running on port ${port} 🚀`);

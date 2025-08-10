@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Lesssors = require("./lessor.model");
-const { postLessor, getLessor, updateLessor, deleteLessor, getSingleLessor } = require("./lessor.controller");
+const {updateLessor, deleteLessor, getSingleLessor, getRentals } = require("./lessor.controller");
 const authMiddleware = require('../middleware/auth.middleware');
 
 //manage rental - ย้ายไปข้างบน
