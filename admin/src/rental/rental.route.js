@@ -1,9 +1,17 @@
 const express = require('express');
 const Rental = require('./rental.model');
-const { createRental } = require('./rantal.controller');
+const { createRental, getCustomerRentals, customerUpdateRental, customerDeleteRental, getRentals } = require('./rantal.controller');
 const router = express.Router();
 
-//Create rental end point
-router.post('/create-rental', createRental)
+const authMiddleware = require('../middleware/auth.middleware');
+
+//Create customer rental end point
+router.post('/create-rental',authMiddleware, createRental)
+router.get('/c',authMiddleware, getCustomerRentals)
+router.put('/update-rental/:id',authMiddleware, customerUpdateRental)
+router.delete('/delete/:id',authMiddleware, customerDeleteRental)
+
+// Lessor and Admin can view all rentals
+router.get('/', authMiddleware, getRentals);
 
 module.exports = router

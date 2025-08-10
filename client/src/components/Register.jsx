@@ -37,13 +37,7 @@ const Register = () => {
       return;
     }
 
-    let endpoint = "";
-
-    if (data.role === "customer") {
-      endpoint = "http://localhost:5000/api/customers/register";
-    } else if (data.role === "lessor") {
-      endpoint = "http://localhost:5000/api/lessors/register";
-    }
+    const endpoint = "http://localhost:5000/api/auth/register";
 
     const finalData = {
       ...data,

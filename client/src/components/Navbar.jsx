@@ -1,24 +1,25 @@
 import React, { useState, useContext } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link,  useNavigate } from 'react-router-dom';
 import '../App.css';
+import { FaBell, FaChevronDown } from 'react-icons/fa';
 
-import { AuthContext } from '../context/AuthContext';
+import { useAuth } from '../context/AuthContext';
 import { useSelector } from 'react-redux';
 import { FaShoppingBag } from 'react-icons/fa';
 
 
 function Navbar({ onSearchClick }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const { currentUser, logout } = useContext(AuthContext);
+  const { currentUser, logout } = useAuth();
   const cartItems = useSelector(state => state.cart.cartItems);
 
   const handleLogout = () => {
     logout();
     navigate('/');
     setIsOpen(false);
+    setDropdownOpen(false);
   };
 //search
   const handleScrollToSearch = () => {
@@ -76,28 +77,56 @@ function Navbar({ onSearchClick }) {
             <li><button onClick={handleScrollToSearch} className="text-xl text-[var(--primary-text)] hover:text-black">ค้นหาอุปกรณ์</button></li>
             <li><Link to="/category" className="text-xl text-[var(--primary-text)] hover:text-black" onClick={() => setIsOpen(false)}>หมวดหมู่</Link></li>
             <li><Link to="/contact" className="text-xl text-[var(--primary-text)] hover:text-black" onClick={() => setIsOpen(false)}>ติดต่อเรา</Link></li>
+          
+          
           </ul>
 
           {/* เงื่อนไข: ล็อกอินแล้ว (ผู้เช่า) */}
           {currentUser && currentUser.role === 'customer' ? (
             <ul className="flex flex-col md:flex-row gap-y-3 md:gap-x-5 md:ml-10 mt-4 md:mt-0 items-start md:items-center text-[var(--primary-text)]">
-              <li><Link to="/profile" 
-                    onClick={() => setIsOpen(false)} 
-                    className="text-xl hover:text-black">ข้อมูลส่วนตัว</Link></li>
               <li>
-                <Link to="/cart"
+                <Link
+                  to="/cart"
                   onClick={() => setIsOpen(false)}
-                  className="relative text-xl hover:text-black flex items-center">
-                  <FaShoppingBag className="mr-1" /> ตะกร้า
-                  {cartItems.length > 0 && (
-                    <span className="ml-1 text-sm text-white bg-red-500 rounded-full px-2 py-0.5">
-                      {cartItems.length}
-                    </span>
-                  )}
-                </Link></li>
-              <li><button 
-                    onClick={handleLogout} 
-                    className="text-xl hover:text-black">ออกจากระบบ</button></li>
+                  className="relative flex items-center border-2 gap-1 px-4 py-2 bg-[var(--primary-green)] text-white rounded-md shadow hover:bg-[var(--secondary-green)] transition-colors"
+                >
+                  <FaShoppingBag className="text-lg" />ตะกร้า
+                  {
+                    cartItems.length > 0 ?  <span className="text-sm font-semibold sm:ml-1">
+                    {cartItems.length}</span> :  <span className="text-sm font-semibold sm:ml-1">0</span>
+                  }
+                </Link>
+              </li>
+              
+              <li className='relative'> 
+                  <FaBell className="text-lg cursor-pointer hover:text-black" />
+                  <span className="absolute -top-1 -right-2 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5 shadow">
+                      1
+                  </span>
+              </li>
+
+              <li className='relative'>
+                <button
+                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  className='relative inline-flex items-center border-2 gap-1 px-4 py-2 bg-[var(--primary-green)] text-white rounded-md shadow hover:bg-[var(--secondary-green)] transition-colors'
+                >
+                  สวัสดี, {currentUser.firstName}
+                  <FaChevronDown className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
+                    <Link to="/profile" 
+                    onClick={() => setDropdownOpen(false)} 
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-300">ข้อมูลส่วนตัว
+                    </Link>
+                    <button
+                      onClick={handleLogout} 
+                      className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-300">ออกจากระบบ
+                    </button>
+                  </div>
+                )}
+
+              </li>
             </ul>
           ) : (
             // ถ้ายังไม่ล็อกอิน
@@ -112,6 +141,7 @@ function Navbar({ onSearchClick }) {
             </ul>
           )}
         </div>
+        
       </div>
     </nav>
   );

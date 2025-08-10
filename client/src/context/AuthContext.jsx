@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
 
   const registerUser = async (data) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/customers/register", data);
+      const res = await axios.post("http://localhost:5000/api/auth/register", data);
       return res.data;
     } catch (error) {
       console.error("Register failed:", error);
@@ -36,11 +36,11 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async ({ username, password }) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/customers/login", { username, password });
+      const res = await axios.post("http://localhost:5000/api/auth/login", { username, password });
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.customer));
+      localStorage.setItem("user", JSON.stringify(res.data.user));
       axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
-      setCurrentUser(res.data.customer);
+      setCurrentUser(res.data.user);
       return res.data;
     } catch (error) {
       console.error("Login failed:", error);
@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -58,12 +59,28 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
+  const createRental = async (rentalData) => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/rentals", rentalData);
+      return res.data;
+    } catch (error) {
+      console.error("Create rental failed:", error);
+      if (error.response) {
+        return { success: false, message: error.response.data.message };
+      }
+      return { success: false, message: "Network or server error" };
+    }
+  };
+
+
   const value = {
     currentUser,
     registerUser,
     loginUser,
     logout,
+    createRental,
     loading,
+    
   };
 
   return <AuthContext.Provider value={value}>{!loading && children}</AuthContext.Provider>;

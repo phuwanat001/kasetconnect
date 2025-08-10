@@ -4,14 +4,10 @@ const rentalSchema = new mongoose.Schema(
   {
     customer: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
+  ref: "Customer",
       required: true,
-    },
-    lessor: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Lessor",
-      required: true,
-    },
+    }
+    ,
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
