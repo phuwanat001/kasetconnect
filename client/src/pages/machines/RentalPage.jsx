@@ -44,7 +44,7 @@ const RentalPage = () => {
 
       if (res.data.success) {
         alert("การเช่าสำเร็จ");
-        navigate("/thank-you");
+        navigate(`/payment/${res.data.rental._id}`);
       } else {
         alert(res.data.message || "เกิดข้อผิดพลาดในการเช่า");
       }
@@ -114,7 +114,9 @@ const RentalPage = () => {
                   <div className="md:col-span-2">
                     <label>วันที่เริ่มเช่า</label>
                     <input
-                      {...register("rentalStartDate", { required: "กรุณาเลือกวันที่เริ่มเช่า" })}
+                      {...register("rentalStartDate", { required: "กรุณาเลือกวันที่เริ่มเช่า",
+                        validate: value => new Date(value) >= new Date().setHours(0,0,0,0) || "วันที่เริ่มเช่าต้องไม่น้อยกว่าวันนี้"
+                       })}
                       type="date"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />
@@ -124,7 +126,9 @@ const RentalPage = () => {
                   <div className="md:col-span-2">
                     <label>วันที่สิ้นสุดการเช่า</label>
                     <input
-                      {...register("rentalEndDate", { required: "กรุณาเลือกวันที่สิ้นสุดการเช่า" })}
+                      {...register("rentalEndDate", { required: "กรุณาเลือกวันที่สิ้นสุดการเช่า",
+                         validate: (value, formValues) => new Date(value) > new Date(formValues.rentalStartDate) || "วันสิ้นสุดต้องมากกว่าวันเริ่ม"
+                       })}
                       type="date"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                     />

@@ -7,6 +7,8 @@ import Login from "../components/Login";
 import Register from "../components/Register";
 import CartPage from "../pages/machines/CartPage";
 import RentalPage from "../pages/machines/RentalPage";
+import PaymentPage from "../pages/machines/PaymentPage";
+import MachineDetailPage from "../pages/machines/MachineDetailPage";
 
 
 const router = createBrowserRouter([
@@ -20,7 +22,9 @@ const router = createBrowserRouter([
             {path: '/login', element: <Login/>},
             {path: '/register', element: <Register/>},
             {path: '/cart', element: <CartPage/>},
-            {path: '/rental', element: <RentalPage />}
+            {path: '/rental', element: <RentalPage />},
+            {path: '/payment', element: <PaymentPage />},
+            {path: '/machines/:id', element: <MachineDetailPage />}
         ],
     },
 ])

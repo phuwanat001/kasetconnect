@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import MachineCard from '../machines/MachineCard';
 import Product from '../../components/Product';
+import axios from 'axios';
 
 
 function Home() {
@@ -29,16 +30,18 @@ function Home() {
     }
   }, [location]);
 
-  useEffect(() =>  {
-      fetch("/machines.json")
-      .then(res => res.json())
-      .then((data) => {
-        setMachines(data);
-        setFilteredMachines(data);
-      });
-    }, []);
-
-  
+  useEffect (() => {
+    const fethMachines = async () => {
+      try{
+      const res = await axios.get("http://localhost:5000/api/products");
+      setMachines(res.data.products || res.data || []);
+      setFilteredMachines(res.data.products || res.data || []);
+    } catch (err) {
+      console.err("Failed to fetch machines:", err);
+    }
+  };
+  fethMachines();
+  }, []);
 
   return (
     <>
@@ -72,11 +75,10 @@ function Home() {
         <h2 className='text-xl font-semibold mb-4 text-gray-800'>รายการแนะนำ</h2>
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
           {filteredMachines.map((machine, index) => (
-            <MachineCard key={index} machine={machine}/>
+            <MachineCard key={machine._id || index} machine={machine}/>
           ))}
         </div>
       </div>
-        {/* <Product/> */}
     </>
   );
 }
