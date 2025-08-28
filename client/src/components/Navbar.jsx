@@ -117,8 +117,12 @@ function Navbar({ onSearchClick }) {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50">
                     <Link to="/profile" 
                     onClick={() => setDropdownOpen(false)} 
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-300">ข้อมูลส่วนตัว
-                    </Link>
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-300" >ข้อมูลส่วนตัว</Link>
+
+                    <Link to="/rentallist"
+                    onClick={() => setDropdownOpen(false)}
+                    className='block px-4 py-2 text-gray-800 hover:bg-gray-300'>รายการเช่า</Link>
+        
                     <button
                       onClick={handleLogout} 
                       className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-300">ออกจากระบบ

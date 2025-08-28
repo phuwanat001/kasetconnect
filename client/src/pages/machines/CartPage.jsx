@@ -55,9 +55,12 @@ const CartPage = () => {
                                             </h3>
                                             <p className="sm:ml-4">฿{product.price}</p>
                                         </div>
-                                        <p className="mt-1 text-sm text-gray-500 capitalize">
-                                            <strong>หมวดหมู่:</strong> {product.category}
-                                        </p>
+                                        <p className="mt-1 text-sm text-gray-500 capitalize py-1"><strong>หมวดหมู่:</strong> {product.product_type}</p>
+                                        <p className="text-sm text-gray-500 mb-1"><strong>สถานะ :</strong> {product.status === "available" ? (
+                                            <span className="text-green-600">ว่าง จำนวน {product.stock} คัน</span>
+                                            ) : (
+                                            <span className="text-red-600">ไม่ว่าง</span>
+                                            )}</p>
                                     </div>
                                     <div className="flex flex-1 items-end justify-between text-sm mt-3">
                                         <p className="text-gray-500 flex items-center gap-2">
