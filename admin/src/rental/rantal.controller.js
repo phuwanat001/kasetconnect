@@ -1,5 +1,7 @@
 const Rental = require("./rental.model");
 const Customer = require("../customer/customer.model");
+const Lessor = require("../lessor/lessor.model");
+const Deposit = require("./deposit/deposit.model");
 const Product = require("../products/product.model");
 const jwt = require("jsonwebtoken");
 
@@ -22,7 +24,9 @@ const authenticate = (req, res) => {
 const createRental = async (req, res) => {
   try {
     const auth = authenticate(req, res);
-    if (auth.error) return res.status(auth.error.status).json({ message: auth.error.message });
+    if (auth.error) {
+      return res.status(auth.error.status).json({ message: auth.error.message });
+    }
 
     const customer = await Customer.findById(auth.decoded.id);
     if (!customer) return res.status(404).json({ message: "Customer not found" });
@@ -41,10 +45,22 @@ const createRental = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // Validate delivery address
+    if (!deliveryAddress.street || !deliveryAddress.city || !deliveryAddress.country || !deliveryAddress.zipCode) {
+      return res.status(400).json({ message: "Incomplete delivery address" });
+    }
+
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
     if (quantity <= 0) return res.status(400).json({ message: "Quantity must be greater than 0" });
     if (quantity > product.stock) return res.status(400).json({ message: "Not enough stock" });
+
+    const startDate = new Date(rentalStartDate);
+    const endDate = new Date(rentalEndDate);
+
+    if (endDate <= startDate) {
+      return res.status(400).json({ message: "Rental end date must be after start date" });
+    }
 
     const totalPrice = quantity * product.price;
 
@@ -55,14 +71,26 @@ const createRental = async (req, res) => {
       totalPrice,
       deliveryAddress,
       phone,
-      rentalStartDate,
-      rentalEndDate,
+      rentalStartDate: startDate,
+      rentalEndDate: endDate,
       returnDate,
     });
 
+    // Create deposit automatically (optional)
+    const deposit = new Deposit({
+      rental: rental._id,
+      status: "รอชำระค่ามัดจำ",
+    });
+    await deposit.save();
+
+    rental.deposit = deposit._id;
     const savedRental = await rental.save();
+
     product.stock -= quantity;
     await product.save();
+
+    // populate deposit ก่อนส่งกลับ
+    await savedRental.populate("deposit", "status");
 
     res.status(201).json({
       message: "Rental created successfully",
@@ -70,9 +98,10 @@ const createRental = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating rental:", error);
-    res.status(500).json({ message: "Failed to create rental" });
+    res.status(500).json({ message: "Failed to create rental", error: error.message });
   }
 };
+
 
 // ====================== Get Customer Rentals ======================
 const getCustomerRentals = async (req, res) => {
@@ -86,6 +115,7 @@ const getCustomerRentals = async (req, res) => {
     const rentals = await Rental.find({ customer: customer._id })
       .populate("product", "name price category description images")
       .populate("customer", "firstName lastName email phone")
+      .populate("deposit", " status")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -213,10 +243,33 @@ const getRentals = async (req, res) => {
   }
 };
 
+const getRentalById = async (req, res) => {
+  try {
+    const auth = authenticate(req, res);
+    if (auth.error) return res.status(auth.error.status).json({ message: auth.error.message });
+
+    const rentalId = req.params.id;
+    const rental = await Rental.findById(rentalId)
+      .populate("product", "name price category")
+      .populate("customer", "firstName lastName email phone");
+
+    if (!rental) return res.status(404).json({ message: "Rental not found" });
+
+    res.status(200).json({
+      message: "Rental retrieved successfully",
+      rental,
+    });
+  } catch (error) {
+    console.error("Error fetching rental by ID:", error);
+    res.status(500).json({ message: "Failed to fetch rental" });
+  }
+};
+
 module.exports = {
   createRental,
   getCustomerRentals,
   customerUpdateRental,
   customerDeleteRental,
   getRentals,
+  getRentalById,
 };

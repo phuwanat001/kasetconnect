@@ -11,13 +11,14 @@ const productSchema = new mongoose.Schema(
       type: String,
       enum: ["available", "unavailable"],
       default: "available",
+      
     },
     product_type: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "ProductType",
       required: true,
     },
-    image: { type: String, required: true },
+    image: { type: String },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Lessors",

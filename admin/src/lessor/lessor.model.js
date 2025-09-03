@@ -44,8 +44,7 @@ const lessorSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["customer", "lessor"],
-      default: "customer",
+      required: true,
     },
   },
   { timestamps: true }

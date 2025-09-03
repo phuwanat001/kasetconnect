@@ -1,6 +1,7 @@
 const Lessors = require("./lessor.model");
 const Rental = require("../rental/rental.model");
 const Customers = require("../customer/customer.model");
+const Product = require("../products/product.model");
 const jwt = require("jsonwebtoken");
 
 //Update a lessor
@@ -96,7 +97,7 @@ const getSingleLessor = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch lessor" });
   }
-}
+};
 
 // Lessors can view all rentals
 
@@ -106,61 +107,119 @@ const getRentals = async (req, res) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    
     const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // ตรวจสอบว่าเป็น lessor จริงหรือไม่
-    const lessor = await Lessors.findById(decoded.id);
-    if (!lessor) {
-      return res.status(404).json({ message: "Lessor not found" });
-    }
-    
-    // ดึงข้อมูล rentals ทั้งหมด - แก้ไข populate
-    const rentals = await Rental.find()
-      .populate('product', 'name price category description')
-      .sort({ createdAt: -1 });
-    
-    //console.log("Rentals found:", rentals.length); // debug
-    
-    // ตรวจสอบว่ามี rentals หรือไม่ (ใช้ length แทน !rentals)
-    if (rentals.length === 0) {
-      return res.status(200).json({ 
+    // 1. Decode token (สมมติ authMiddleware แปะ req.user.lessorId ไว้แล้ว)
+    const lessorId = await Lessors.findById(decoded.id);
+
+    // 2. หา product ของ lessor
+    const products = await Product.find({ createdBy: lessorId }).select("_id");
+    const productIds = products.map(p => p._id);
+
+    if (!productIds.length) {
+      return res.status(200).json({
         message: "No rentals found",
         totalRentals: 0,
-        rentals: []
+        rentals: [],
       });
     }
-    
+
+    // 3. หา rentals ที่ product อยู่ใน productIds
+    const rentals = await Rental.find({ product: { $in: productIds } })
+      .populate("customer", "firstName lastName email phone")
+      .populate("product", "name price")
+      .sort({ createdAt: 1 });
+
     res.status(200).json({
       message: "Rentals retrieved successfully",
       totalRentals: rentals.length,
-      rentals: rentals,
+      rentals,
     });
-    
   } catch (error) {
-    console.error("Error fetching rentals:", error); // debug
-    
-    // Handle specific errors
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-    
-    if (error.name === 'CastError') {
-      return res.status(400).json({ message: "Invalid ID format" });
-    }
-    
-    res.status(500).json({ 
+    console.error("Error fetching rentals:", error);
+    res.status(500).json({
       message: "Failed to fetch rentals",
-      error: error.message 
+      error: error.message,
     });
   }
 };
 
+
+
+
+const getProducts = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    let products = await Product.find({ createdBy: decoded.id })
+      .populate([
+        { path: "product_type", select: "name" },
+        { path: "createdBy", select: "firstName" },
+      ])
+      .sort({ createdAt: 1 });
+
+    if (!products.length) {
+      return res.status(404).json({ message: "Products not found" });
+    }
+
+    products = products.map((p) => {
+      const prodObj = p.toObject();
+      if (prodObj.stock === 0) prodObj.status = "unavailable";
+      if (prodObj.product_type && prodObj.product_type.name) {
+        prodObj.product_type = prodObj.product_type.name;
+      }
+      if (prodObj.createdBy) prodObj.createdBy = prodObj.createdBy.firstName;
+
+      return prodObj;
+    });
+
+    res.status(200).json({
+      message: "Products fetched successfully",
+      totalProducts: products.length,
+      products,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({ message: "Failed to fetch products" });
+  }
+};
+
+const confirmRental = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const lessor = await Lessors.findById(decoded.id);
+    const rental = await Rental.findByIdAndUpdate(id);
+    if( !rental === lessor._id.toString()) {
+      return res.status(403).json({ message: "Forbidden: You can't confirm this rental" });
+    }
+    rental.status = "อนุมัติแล้ว";
+
+    await rental.save();
+    res.status(200).json({
+      message: "Rental confirmed successfully",
+      rental,
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: "Failed to confirm rental", error: error.message });
+  }
+}
 
 module.exports = {
   updateLessor,
   deleteLessor,
   getSingleLessor,
   getRentals,
+  getProducts,
+  confirmRental,
 };

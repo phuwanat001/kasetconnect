@@ -1,16 +1,15 @@
 const Admin = require("./admin.model");
 const Customers = require("../customer/customer.model");
 const Lesssors = require("../lessor/lessor.model");
-
+const Rental = require("../rental/rental.model");
+const Deposit = require("../rental/deposit/deposit.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const postAdmin = async (req, res) => {
   try {
     const { firstName, lastName, username, password } = req.body;
-    const existingAdmin = await Admin.findOne(
-     { username },
-    );
+    const existingAdmin = await Admin.findOne({ username });
     if (existingAdmin) {
       return res.status(400).json({
         success: false,
@@ -100,7 +99,7 @@ const loginAdmin = async (req, res) => {
 };
 
 // Function to get all customers
-const getAllCustomers =async (req, res) => {
+const getAllCustomers = async (req, res) => {
   try {
     const customers = await Customers.find();
     res.status(200).json({
@@ -113,7 +112,7 @@ const getAllCustomers =async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
 //Function to get a customer by ID
 const getCustomerById = async (req, res) => {
   try {
@@ -135,24 +134,23 @@ const getCustomerById = async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
 
 //Function to get all lessors
-const getAllLessors =async (req, res) => {
+const getAllLessors = async (req, res) => {
   try {
     const lessors = await Lesssors.find();
     res.status(200).json({
       success: true,
       lessors,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
-}
+};
 //Function to get lessors by ID
 const getLessorById = async (req, res) => {
   try {
@@ -174,15 +172,85 @@ const getLessorById = async (req, res) => {
       message: "Internal server error",
     });
   }
-}
+};
 
+// Function to get all rentals
+
+const getAllRentals = async (req, res) => {
+  try {
+    const rentals = await Rental.find()
+      .populate({
+        path: "product",
+        select: "name price category createdBy",
+        populate: {
+          path: "createdBy",
+          select: "firstName lastName",
+        },
+      })
+      .populate("customer", "firstName lastName email phone")
+      .populate("deposit", "amount status")
+      .sort({ createdAt: -1 });
+
+    if (!rentals.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No rentals found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      rentals,
+    });
+  } catch (error) {
+    console.error("Error fetching rentals:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+// Function to get rental by ID
+const getRentalById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const rental = await Rental.findById(id)
+      .populate({
+        path: "product",
+        select: "name price category createdBy",
+        populate: {
+          path: "createdBy",
+          select: "firstName lastName",
+        },
+      })
+      .populate("customer", "firstName lastName email phone")
+      .sort({ createdAt: -1 });
+    if (!rental) {
+      return res.status(404).json({
+        success: false,
+        message: "Rental not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      rental,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 
 module.exports = {
-    postAdmin,
-    loginAdmin,
-    getAllCustomers,
-    getCustomerById,
-    getAllLessors,
-    getLessorById,
-
+  postAdmin,
+  loginAdmin,
+  getAllCustomers,
+  getCustomerById,
+  getAllLessors,
+  getLessorById,
+  getAllRentals,
+  getRentalById,
 };

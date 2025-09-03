@@ -1,0 +1,14 @@
+.autoShow{
+    animation: text-pear both 2s;
+
+}
+@keyframes text-pear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
