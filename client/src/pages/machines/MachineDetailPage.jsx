@@ -60,7 +60,7 @@ const MachineDetailPage = () => {
       alert("กรุณาเข้าสู่ระบบเพื่อทำการจอง");
       return;
     }
-    navigate("/rental");
+    navigate("/rental",{state: {machine: {...machine, quantity: 1}}});
   };
 
   return (

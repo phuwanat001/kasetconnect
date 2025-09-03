@@ -33,7 +33,7 @@ const MachineCard = ({ machine }) => {
     if (!currentUser) {
       alert("กรุณาเข้าสู่ระบบเพื่อทำการจอง");
     } else {
-      navigate('/rental')
+      navigate('/rental', { state: { machine } });
     }
   }
 
@@ -56,7 +56,7 @@ const MachineCard = ({ machine }) => {
       <div className="flex justify-center flex-grow">
         <img
           src={machine.image}
-          alt={machine.name}
+          alt={machine.name || 'Machine Image'}
           className="w-40 h-40 object-contain mb-4"
         />
       </div>
@@ -94,12 +94,14 @@ const MachineCard = ({ machine }) => {
       <div className="mt-auto flex justify-between gap-4">
         {/* ปุ่มจอง ถ้าไม่มีเครื่องว่าง จะ disable และสีเทา */}
         {availableCount > 0 ? (
-          <button
+          <Link
+            to="/rental"
+            state={{machine}}
             onClick={handleBooking}
             className="flex-1 text-center bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
             จองตอนนี้
-          </button>
+          </Link>
         ) : (
           <button
             disabled

@@ -28,8 +28,9 @@ const createRental = async (req, res) => {
     if (!customer) return res.status(404).json({ message: "Customer not found" });
 
     const {
-      productId,
-      quantity,
+      products,
+      paymentType,
+      paidAmount,
       deliveryAddress,
       phone,
       rentalStartDate,
@@ -37,22 +38,30 @@ const createRental = async (req, res) => {
       returnDate,
     } = req.body;
 
-    if (!productId || !quantity || !deliveryAddress || !phone || !rentalStartDate || !rentalEndDate) {
+    if (!products || products.length === 0 || !deliveryAddress || !phone || !rentalStartDate || !rentalEndDate) {
       return res.status(400).json({ message: "Missing required fields" });
     }
+     // ตรวจสอบและคำนวณราคาสินค้าแต่ละชิ้น
+    let totalPrice = 0;
+    const productUpdates = [];
 
-    const product = await Product.findById(productId);
-    if (!product) return res.status(404).json({ message: "Product not found" });
-    if (quantity <= 0) return res.status(400).json({ message: "Quantity must be greater than 0" });
-    if (quantity > product.stock) return res.status(400).json({ message: "Not enough stock" });
+    for (const item of products) {
+      const product = await Product.findById(item.product);
+      if (!product) return res.status(404).json({ message: `Product not found: ${item.product}` });
+      if (item.quantity <= 0) return res.status(400).json({ message: "Quantity must be greater than 0" });
+      if (item.quantity > product.stock) return res.status(400).json({ message: `Not enough stock for ${product.name}` });
 
-    const totalPrice = quantity * product.price;
-
+      totalPrice += product.price * item.quantity;
+      productUpdates.push({ product, quantity: item.quantity });
+    }
+    
     const rental = new Rental({
       customer: customer._id,
-      product: product._id,
-      quantity,
+      products,
       totalPrice,
+      paymentType: paymentType || "full",
+      paidAmount: paidAmount ?? (paymentType === "deposit" ? +(totalPrice * 0.25).toFixed(2) : totalPrice),
+      paymentSlip: req.file ? `/uploads/${req.file.filename}` : null,
       deliveryAddress,
       phone,
       rentalStartDate,
@@ -61,8 +70,11 @@ const createRental = async (req, res) => {
     });
 
     const savedRental = await rental.save();
-    product.stock -= quantity;
-    await product.save();
+
+    for (const item of productUpdates) {
+      item.product.stock -= item.quantity;
+      await item.product.save();
+    }
 
     res.status(201).json({
       message: "Rental created successfully",
@@ -84,7 +96,7 @@ const getCustomerRentals = async (req, res) => {
     if (!customer) return res.status(404).json({ success: false, message: "Customer not found" });
 
     const rentals = await Rental.find({ customer: customer._id })
-      .populate("product", "name price category description images")
+      .populate("products.product", "name price category description images")
       .populate("customer", "firstName lastName email phone")
       .sort({ createdAt: -1 });
 
@@ -111,8 +123,7 @@ const customerUpdateRental = async (req, res) => {
 
     const rentalId = req.params.id;
     const {
-      quantity,
-      totalPrice,
+      products,
       deliveryAddress,
       phone,
       rentalStartDate,
@@ -120,26 +131,46 @@ const customerUpdateRental = async (req, res) => {
       returnDate,
     } = req.body;
 
-    const rental = await Rental.findById(rentalId).populate("product");
+    const rental = await Rental.findById(rentalId).populate("products.product");
     if (!rental) return res.status(404).json({ message: "Rental not found" });
 
     if (rental.customer.toString() !== customer._id.toString()) {
       return res.status(403).json({ message: "You are not allowed to update this rental" });
     }
 
-    if (quantity !== undefined) {
-      const diff = quantity - rental.quantity;
-      if (diff > 0 && diff > rental.product.stock) {
-        return res.status(400).json({ message: "Not enough stock for update" });
+    if (products && Array.isArray(products)) {
+      // คืน stock 
+      for (const item of rental.products) {
+        item.product.stock += item.quantity;
+        await item.product.save();
       }
 
-      rental.product.stock -= diff;
-      rental.quantity = quantity;
-      rental.totalPrice = rental.quantity * rental.product.price;
+      // ตรวจสอบ stock ใหม่และคำนวณ totalPrice ใหม่
+      let totalPrice = 0;
+      const productUpdates = [];
+      for (const item of products) {
+        const product = await Product.findById(item.product);
+        if (!product) return res.status(404).json({ message: `Product not found: ${item.product}` });
+        if (item.quantity <= 0) return res.status(400).json({ message: "Quantity must be greater than 0" });
+        if (item.quantity > product.stock) return res.status(400).json({ message: `Not enough stock for ${product.name}` });
 
-      await rental.product.save();
-    } else if (totalPrice !== undefined) {
+        totalPrice += product.price * item.quantity;
+        productUpdates.push({ product, quantity: item.quantity });
+      }
+
+      rental.products = products;
       rental.totalPrice = totalPrice;
+      if (rental.paymentType === "deposit") {
+        rental.paidAmount = +(totalPrice * 0.25).toFixed(2);
+      } else {
+        rental.paidAmount = totalPrice;
+      }
+
+      // ลด stock
+      for (const item of productUpdates) {
+        item.product.stock -= item.quantity;
+        await item.product.save();
+      }
     }
 
     rental.deliveryAddress = deliveryAddress ?? rental.deliveryAddress;
@@ -147,6 +178,10 @@ const customerUpdateRental = async (req, res) => {
     rental.rentalStartDate = rentalStartDate ?? rental.rentalStartDate;
     rental.rentalEndDate = rentalEndDate ?? rental.rentalEndDate;
     rental.returnDate = returnDate ?? rental.returnDate;
+
+    if (req.file) {
+      rental.paymentSlip = `/uploads/${req.file.filename}`;
+    }
 
     const updatedRental = await rental.save();
 
@@ -170,15 +205,17 @@ const customerDeleteRental = async (req, res) => {
     if (!customer) return res.status(404).json({ message: "Customer not found" });
 
     const rentalId = req.params.id;
-    const rental = await Rental.findById(rentalId).populate("product");
+    const rental = await Rental.findById(rentalId).populate("products.product");
     if (!rental) return res.status(404).json({ message: "Rental not found" });
 
     if (rental.customer.toString() !== customer._id.toString()) {
       return res.status(403).json({ message: "You are not allowed to delete this rental" });
     }
-
-    rental.product.stock += rental.quantity;
-    await rental.product.save();
+    // คืน stock
+    for (const item of rental.products) {
+      item.product.stock += item.quantity;
+      await item.product.save();
+    }
     await Rental.findByIdAndDelete(rentalId);
 
     res.status(200).json({ message: "Rental deleted and stock updated successfully" });
@@ -200,7 +237,7 @@ const getRentals = async (req, res) => {
     }
 
     const rentals = await Rental.find()
-      .populate("product", "name price category")
+      .populate("products.product", "name price category")
       .populate("customer", "firstName lastName email phone");
 
     res.status(200).json({

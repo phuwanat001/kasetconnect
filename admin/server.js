@@ -12,6 +12,7 @@ app.use(cors({
     origin: ['http://localhost:5173'],
     credentials: true
 }))
+app.use("/upload", express.static("upload"));
 
 //import routes
 const ProductTypeRoutes = require('./src/product_type/type.route');

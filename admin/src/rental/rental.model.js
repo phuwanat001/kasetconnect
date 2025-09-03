@@ -4,23 +4,28 @@ const rentalSchema = new mongoose.Schema(
   {
     customer: {
       type: mongoose.Schema.Types.ObjectId,
-  ref: "Customer",
+      ref: "Customer",
       required: true,
     }
     ,
-    product: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true,
-    },
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
+    products: [
+      {
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
+        quantity: { type: Number, required: true, min: 1 },
+      },
+    ],
     totalPrice: {
       type: Number,
       required: true,
+    },
+    paymentType: {
+      type: String,
+      enum: ["deposit", "full"],
+      default: "full"
+    },
+    paidAmount: {
+      type: Number,
+      required: true
     },
     deliveryAddress: {
       street: String,
@@ -42,6 +47,9 @@ const rentalSchema = new mongoose.Schema(
     },
     returnDate: {
       type: Date,
+    },
+    paymentSlip: {
+      type: String
     },
     status: {
       type: String,

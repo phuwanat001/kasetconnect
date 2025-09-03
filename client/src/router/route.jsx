@@ -11,6 +11,7 @@ import PaymentPage from "../pages/machines/PaymentPage";
 import MachineDetailPage from "../pages/machines/MachineDetailPage";
 import Profile from "../pages/Profile";
 import RentalList from "../pages/machines/RentalList";
+import TermsPage from "../pages/machines/TermsPage";
 
 
 const router = createBrowserRouter([
@@ -28,7 +29,8 @@ const router = createBrowserRouter([
             {path: '/payment', element: <PaymentPage />},
             {path: '/machines/:id', element: <MachineDetailPage />},
             {path: '/profile', element: <Profile />},
-            {path: '/rentallist', element: <RentalList />}
+            {path: '/rentallist', element: <RentalList />},
+            {path: '/terms', element: <TermsPage/>}
         ],
     },
 ])

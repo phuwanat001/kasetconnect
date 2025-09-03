@@ -110,7 +110,7 @@ function Navbar({ onSearchClick }) {
                   onClick={() => setDropdownOpen(!dropdownOpen)}
                   className='relative inline-flex items-center border-2 gap-1 px-4 py-2 bg-[var(--primary-green)] text-white rounded-md shadow hover:bg-[var(--secondary-green)] transition-colors'
                 >
-                  สวัสดี, {currentUser.firstName}
+                  สวัสดี, {currentUser.username}
                   <FaChevronDown className={`transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {dropdownOpen && (

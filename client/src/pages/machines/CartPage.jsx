@@ -7,7 +7,7 @@ import { getImgUrl } from '../../utils/getImgUrl';
 const CartPage = () => {
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart.cartItems);
-    const totalPrice = cartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
 
     const handleRemove = (product) => {
         dispatch(removeFromCart(product));
@@ -16,6 +16,15 @@ const CartPage = () => {
     const handleClearCart = () => {
         dispatch(clearCart());
     };
+
+    const categoryMap = {
+    "688f33e595b62613b179a3b0": "เครื่องจักรเตรียมดิน",
+    "688f34f795b62613b179a3b2": "เครื่องจักรปลูกพืช",
+    "688f36c38807c6067eb1f192": "ระบบให้น้ำ/เครื่องจักรชลประทาน",
+    "68939df421a47768535c175f": "เครื่องจักรดูแลรักษาพืช",
+    "689ae14e2067200086dde897": "เครื่องจักรเก็บเกี่ยว",
+    "689ae15b2067200086dde89a": "เครื่องจักรหลังการเก็บเกี่ยว"
+  }
 
     return (
         <>
@@ -51,11 +60,11 @@ const CartPage = () => {
                                     <div>
                                         <div className="flex justify-between text-base font-medium text-gray-900">
                                             <h3>
-                                                <Link to='='>{product.name}</Link>
+                                                <Link to={`/product/${product._id}`}>{product.name}</Link>
                                             </h3>
-                                            <p className="sm:ml-4">฿{product.price}</p>
+                                            <p className="sm:ml-4">฿{product.price} /วัน</p>
                                         </div>
-                                        <p className="mt-1 text-sm text-gray-500 capitalize py-1"><strong>หมวดหมู่:</strong> {product.product_type}</p>
+                                        <p className="mt-1 text-sm text-gray-500 capitalize py-1"><strong>หมวดหมู่:</strong> {categoryMap[product.product_type] || '-'}</p>
                                         <p className="text-sm text-gray-500 mb-1"><strong>สถานะ :</strong> {product.status === "available" ? (
                                             <span className="text-green-600">ว่าง จำนวน {product.stock} คัน</span>
                                             ) : (
